@@ -7,12 +7,15 @@ import mcjty.theoneprobe.gui.GuiNote;
 import mcjty.theoneprobe.items.ModItems;
 import mcjty.theoneprobe.keys.KeyBindings;
 import mcjty.theoneprobe.keys.KeyInputHandler;
+import mcjty.theoneprobe.rendering.ColorUtil;
 import mcjty.theoneprobe.rendering.OverlayRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Hand;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -32,6 +35,14 @@ public class ClientProxy implements IProxy {
 
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
         KeyBindings.init();
+
+        Minecraft minecraft = Minecraft.getInstance();
+        //noinspection ConstantConditions
+        if (minecraft != null) {
+            IResourceManager manager = Minecraft.getInstance().getResourceManager();
+            if (manager instanceof IReloadableResourceManager)
+                ColorUtil.addResourceListener((IReloadableResourceManager) manager);
+        }
     }
 
     @SubscribeEvent

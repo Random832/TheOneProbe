@@ -263,21 +263,16 @@ public class DefaultProbeInfoProvider implements IProbeInfoProvider {
 
     private void addFluidInfo(IProbeInfo probeInfo, ProbeConfig config, FluidStack fluidStack, int maxContents) {
         int contents = fluidStack.getAmount();
-    	if(config.getTankMode() == 1) {
-        	Color color = new Color(fluidStack.getFluid().getAttributes().getColor(fluidStack));
-        	if(fluidStack.getFluid() == Fluids.LAVA) {
-    			color = new Color(255, 139, 27);
-        	}
-        	IFormattableTextComponent text = new StringTextComponent("");
-        	text.appendSibling(ElementProgress.format(contents, Config.tankFormat.get(), new StringTextComponent("mB")));
-        	text.appendString("/");
-        	text.appendSibling(ElementProgress.format(maxContents, Config.tankFormat.get(), new StringTextComponent("mB")));
-        	probeInfo.tankSimple(maxContents, fluidStack, 
-        			probeInfo.defaultProgressStyle()
-        			.numberFormat(NumberFormat.NONE)
-        			.borderlessColor(color, color.darker().darker())
-        			.prefix(((IFormattableTextComponent)fluidStack.getDisplayName()).appendString(": "))
-        			.suffix(text));
+        if(config.getTankMode() == 1) {
+            IFormattableTextComponent text = new StringTextComponent("");
+            text.appendSibling(ElementProgress.format(contents, Config.tankFormat.get(), new StringTextComponent("mB")));
+            text.appendString("/");
+            text.appendSibling(ElementProgress.format(maxContents, Config.tankFormat.get(), new StringTextComponent("mB")));
+            probeInfo.tankSimple(maxContents, fluidStack,
+                    probeInfo.defaultProgressStyle()
+                            .numberFormat(NumberFormat.NONE)
+                            .prefix(((IFormattableTextComponent)fluidStack.getDisplayName()).appendString(": "))
+                            .suffix(text).fluidBar(fluidStack));
         } else {
             if (!fluidStack.isEmpty()) {
                 probeInfo.text(CompoundText.create().style(NAME).text("Liquid:").info(fluidStack.getTranslationKey()));

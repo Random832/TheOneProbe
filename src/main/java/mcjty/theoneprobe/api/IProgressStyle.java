@@ -2,6 +2,7 @@ package mcjty.theoneprobe.api;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Style for the progress bar.
@@ -61,6 +62,9 @@ public interface IProgressStyle {
     IProgressStyle lifeBar(boolean b);
     IProgressStyle armorBar(boolean b);
 
+    // Fluid Stack to override the provided bar colors
+    IProgressStyle fluidBar(FluidStack fluid);
+
     int getBorderColor();
     int getBackgroundColor();
     int getFilledColor();
@@ -80,4 +84,6 @@ public interface IProgressStyle {
     
     boolean isLifeBar();
     boolean isArmorBar();
+
+    FluidStack getFluidBar();
 }

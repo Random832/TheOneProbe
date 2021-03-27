@@ -8,6 +8,8 @@ import mcjty.theoneprobe.api.NumberFormat;
 import mcjty.theoneprobe.apiimpl.TheOneProbeImp;
 import mcjty.theoneprobe.apiimpl.client.ElementProgressRender;
 import mcjty.theoneprobe.apiimpl.styles.ProgressStyle;
+import mcjty.theoneprobe.network.NetworkTools;
+import mcjty.theoneprobe.rendering.ColorUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -42,7 +44,12 @@ public class ElementProgress implements IElement {
                 .numberFormat(NumberFormat.values()[buf.readByte()])
                 .lifeBar(buf.readBoolean())
                 .armorBar(buf.readBoolean())
-                .alignment(buf.readEnumValue(ElementAlignment.class));
+                .alignment(buf.readEnumValue(ElementAlignment.class))
+                .fluidBar(buf.readFluidStack());
+        if(!style.getFluidBar().isEmpty()) {
+            int fluidColor = ColorUtil.getFluidColor(style.getFluidBar());
+            style.borderlessColor(fluidColor, ColorUtil.brighter(fluidColor), ColorUtil.darker(ColorUtil.darker(fluidColor)));
+        }
     }
     
     // Helper method that allows to edit the style of a helper method reducing copy/pasting code from internals
@@ -121,7 +128,11 @@ public class ElementProgress implements IElement {
         buf.writeByte(style.getNumberFormat().ordinal());
         buf.writeBoolean(style.isLifeBar());
         buf.writeBoolean(style.isArmorBar());
+<<<<<<< HEAD
         buf.writeEnumValue(style.getAlignment());
+=======
+        buf.writeFluidStack(style.getFluidBar());
+>>>>>>> WIP fluid meter coloring
     }
 
     @Override

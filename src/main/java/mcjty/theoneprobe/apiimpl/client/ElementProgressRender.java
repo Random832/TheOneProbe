@@ -58,17 +58,24 @@ public class ElementProgressRender {
             FontRenderer render = mc.fontRenderer;
             ITextComponent s = style.getPrefixComp().deepCopy().appendSibling(ElementProgress.format(current, style.getNumberFormat(), style.getSuffixComp()));
             int textWidth = render.func_243245_a(s.func_241878_f());
+            int height = render.FONT_HEIGHT;
+            int bg = style.getBackgroundColor() & 0xFFFFFF | 0x55000000;
+            int textX;
             switch (style.getAlignment()) {
                 case ALIGN_BOTTOMRIGHT:
-                    RenderHelper.renderText(mc, matrixStack, (x + w - 3) - textWidth, y + 2, s);
+                    textX = (x + w - 3) - textWidth;
                     break;
                 case ALIGN_CENTER:
-                    RenderHelper.renderText(mc, matrixStack, (x + (w / 2)) - (textWidth / 2), y + 2, s);
+                    textX = (x + (w / 2)) - (textWidth / 2);
                     break;
                 case ALIGN_TOPLEFT:
-                    RenderHelper.renderText(mc, matrixStack, x + 3, y + 2, s);
+                default:
+                    textX = x + 3;
                     break;
             }
+            int textY = y + 2;
+            RenderHelper.renderText(mc, matrixStack, textX, textY, s);
+            RenderHelper.drawThickBeveledBox(matrixStack, textX - 1, textY - 1, textX + textWidth, textY + height, 1, bg, bg, bg);
         }
     }
 

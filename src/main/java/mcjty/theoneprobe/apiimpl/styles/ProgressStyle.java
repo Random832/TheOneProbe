@@ -6,6 +6,7 @@ import mcjty.theoneprobe.api.NumberFormat;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Style for the progress bar.
@@ -32,9 +33,11 @@ public class ProgressStyle implements IProgressStyle {
     	return new ProgressStyle()
     			.borderColor(borderColor).backgroundColor(backgroundColor).filledColor(filledColor).alternateFilledColor(alternatefilledColor)
     			.showText(showText).width(width).height(height).lifeBar(lifeBar).armorBar(armorBar)
-    			.alignment(alignment).prefix(prefix).suffix(suffix).numberFormat(numberFormat);
+    			.alignment(alignment).prefix(prefix).suffix(suffix).numberFormat(numberFormat).fluidBar(fluidBar);
     }
     
+    private FluidStack fluidBar = FluidStack.EMPTY;
+
     /// The color that is used for the border of the progress bar
     @Override
     public ProgressStyle borderColor(int c) {
@@ -130,6 +133,12 @@ public class ProgressStyle implements IProgressStyle {
     }
 
     @Override
+    public IProgressStyle fluidBar(FluidStack fluid) {
+        this.fluidBar = fluid;
+        return this;
+    }
+
+    @Override
     public int getBorderColor() {
         return borderColor;
     }
@@ -202,5 +211,10 @@ public class ProgressStyle implements IProgressStyle {
     @Override
     public boolean isArmorBar() {
         return armorBar;
+    }
+
+    @Override
+    public FluidStack getFluidBar() {
+        return fluidBar;
     }
 }
