@@ -41,37 +41,30 @@ public class ColorUtil {
         });
     }
 
-    // Thanks to King Lemming for the basic idea of how to do this
     public static int getTextureColor(ResourceLocation location) {
-        if (cache.containsKey(location))
-            return cache.getInt(location);
+        return cache.computeIntIfAbsent(location, ColorUtil::getTextureColorInner);
+    }
+
+    // Thanks to King Lemming for the basic idea of how to do this
+    public static int getTextureColorInner(ResourceLocation location) {
         AtlasTexture textureMap = Minecraft.getInstance().getModelManager().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         TextureAtlasSprite sprite = textureMap.getSprite(location);
         if (sprite.getFrameCount() == 0) return -1;
-        int total = 0, totalR = 0, totalB = 0, totalG = 0;
+        float total = 0, red = 0, green = 0, blue = 0;
         for (int x = 0; x < sprite.getWidth(); x++) {
             for (int y = 0; y < sprite.getHeight(); y++) {
                 int pixel = sprite.getPixelRGBA(0, x, y);
                 // this is in 0xAABBGGRR format, not the usual 0xAARRGGBB.
-                int pixelB = pixel >> 16 & 255;
-                int pixelG = pixel >> 8 & 255;
-                int pixelR = pixel & 255;
-                ++total;
-                totalR += pixelR;
-                totalG += pixelG;
-                totalB += pixelB;
+                int alpha = pixel >> 24 & 255;
+                total += alpha;
+                red += (pixel & 255) * alpha;
+                blue += (pixel >> 8 & 255) * alpha;
+                green += (pixel >> 16 & 255) * alpha;
             }
         }
-        int color;
-        if (total <= 0)
-            color = 0xFFFFFFFF;
-        else
-            color = ColorHelper.PackedColor.packColor(255,
-                    totalR / total,
-                    totalG / total,
-                    totalB / total);
-        cache.put(location, color);
-        return color;
+        if (total > 0)
+            return ColorHelper.PackedColor.packColor(255, (int) (red / total), (int) (blue / total), (int) (green / total));
+        return 0xFFFFFFFF;
     }
 
     public static int darker(int color) {
